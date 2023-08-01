@@ -7,6 +7,8 @@ import { Parser, updateParserError, updateParserState, sequenceOf, succeed, expe
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+// Parsers
 const Bit = new Parser((parserState) => {
   if (parserState.isError) return parserState;
 
@@ -22,9 +24,6 @@ const Bit = new Parser((parserState) => {
 
   return updateParserState(parserState, parserState.index + 1, bit);
 });
-
-const Zero = Bit.chain(expect(0, (value, index) => `Zero: Expected "0", but got ${value} at index ${index}`));
-const One = Bit.chain(expect(1, (value, index) => `One: Expected "1", but got ${value} at index ${index}`));
 
 const Uint = (n) => {
   if (n < 1) {
@@ -75,6 +74,7 @@ const RawString = (s) => {
 
   return sequenceOf(byteParsers);
 };
+
 
 // Main
 const tag = (type) => (value) => ({ type, value });

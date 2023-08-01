@@ -1,3 +1,9 @@
+// Constants
+const digitsRegex = /^[0-9]+/;
+const lettersRegex = /^[a-zA-Z]+/;
+
+
+// Helpers
 export const updateParserState = (state, index, result) => ({
   ...state,
   index,
@@ -15,6 +21,7 @@ export const updateParserError = (state, error) => ({
   error,
 });
 
+// Main
 export class Parser {
   constructor(parserStateTransformerFn) {
     this.parserStateTransformerFn = parserStateTransformerFn;
@@ -80,7 +87,7 @@ export const choice = (...parsers) =>
     return updateParserError(parserState, `choice: Unable to match with any parser at index ${parserState.index}`);
   });
 
-export const many = ({ parserStateTransformerFn }) =>
+export const many = (parser) =>
   new Parser((parserState) => {
     if (parserState.isError) return parserState;
 
@@ -90,7 +97,7 @@ export const many = ({ parserStateTransformerFn }) =>
     let isDone = false;
 
     while (!isDone) {
-      const tempState = parserStateTransformerFn(nextState);
+      const tempState = parser.parserStateTransformerFn(nextState);
 
       if (!tempState.isError) {
         result.push(tempState.result);
@@ -104,7 +111,7 @@ export const many = ({ parserStateTransformerFn }) =>
     return updateParserResult(nextState, result);
   });
 
-export const many1 = ({ parserStateTransformerFn }) =>
+export const many1 = (parser) =>
   new Parser((parserState) => {
     if (parserState.isError) return parserState;
 
@@ -114,7 +121,7 @@ export const many1 = ({ parserStateTransformerFn }) =>
     let isDone = false;
 
     while (!isDone) {
-      const tempState = parserStateTransformerFn(nextState);
+      const tempState = parser.parserStateTransformerFn(nextState);
 
       if (!nextState.isError) {
         result.push(tempState.result);
@@ -233,8 +240,6 @@ export const str = (s) =>
     return updateParserError(parserState, `str: Tried to match "${s}", but got "${input.slice(index, 10)}"`);
   });
 
-const lettersRegex = /^[a-zA-Z]+/;
-
 export const letters = new Parser((parserState) => {
   const { input, index, isError } = parserState;
 
@@ -255,7 +260,6 @@ export const letters = new Parser((parserState) => {
   return updateParserError(parserState, `letters: Couldn't match letters at index ${index}`);
 });
 
-const digitsRegex = /^[0-9]+/;
 
 export const digits = new Parser((parserState) => {
   const { input, index, isError } = parserState;
@@ -314,6 +318,7 @@ export const contextual = (generatorFn) =>
 
     return runStep();
   });
+
 
 // My own experiments
 export const expect = (expectedValue, errorMessage) => (result) =>
