@@ -1,0 +1,3 @@
+const the_answer: int = 42
+let greeting: string = 'Hello'
+let is_weather_good: boolean = false
