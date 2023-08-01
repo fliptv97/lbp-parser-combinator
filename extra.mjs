@@ -55,7 +55,7 @@ const variableDeclarationParser = contextual(function* () {
 
 
 // Main
-const file = fs.readFileSync(path.join(__dirname, "./declarations.txt"), "utf-8");
+const file = fs.readFileSync(path.join(__dirname, "./data/declarations.txt"), "utf-8");
 const state = sepBy(str("\n"))(variableDeclarationParser).run(file);
 
 console.log(state);

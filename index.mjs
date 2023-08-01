@@ -105,7 +105,7 @@ const parser = sequenceOf(
   return succeed(results);
 });
 
-const file = new Uint8Array(fs.readFileSync(path.join(__dirname, "./packet.bin"))).buffer;
+const file = new Uint8Array(fs.readFileSync(path.join(__dirname, "./data/packet.bin"))).buffer;
 const dataView = new DataView(file);
 
 const state = parser.run(dataView);
